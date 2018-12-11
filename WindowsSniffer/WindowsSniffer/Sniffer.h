@@ -3,11 +3,10 @@
 #include <Windows.h>
 #include <queue>
 #include "PacketProcessRoutineArgument.h"
+#include "typedefs.h"
 
 namespace WindowsSniffer
 {
-	typedef void (*PACKET_PROCESS_CALLBACK)(LPVOID lpSniffedData, DWORD dwByteCount);
-
 	class Sniffer
 	{
 	public:
@@ -18,7 +17,7 @@ namespace WindowsSniffer
 		VOID Stop(DWORD dwWaitTime);
 	protected:
 		PACKET_PROCESS_CALLBACK m_ppcCallback;
-		volatile LONG m_lIsRunning;
+		LONG m_lIsRunning;
 		HANDLE m_hProcessThread;
 		SOCKET m_sListenSocket;
 

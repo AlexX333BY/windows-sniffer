@@ -77,7 +77,7 @@ namespace WindowsSniffer
 	{
 		if (!InterlockedCompareExchange(&m_lIsRunning, TRUE, FALSE))
 		{
-			PacketProcessRoutineArgument *ppraArgument = new PacketProcessRoutineArgument(m_sListenSocket, &m_lIsRunning, lpArgument);
+			PacketProcessRoutineArgument *ppraArgument = new PacketProcessRoutineArgument(m_sListenSocket, &m_lIsRunning, m_ppcCallback, lpArgument);
 			m_hProcessThread = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)PacketProcessRoutine, this, 0, NULL);
 
 			if (m_hProcessThread == NULL)
@@ -111,5 +111,24 @@ namespace WindowsSniffer
 		{
 			throw new std::logic_error("Nothing to stop");
 		}
+	}
+
+	DWORD WINAPI Sniffer::PacketProcessRoutine(PacketProcessRoutineArgument *lpInstance)
+	{
+		LONG *plIsRunning = lpInstance->GetIsRunningPtr();
+		SOCKET sListenSocket = lpInstance->GetSocket();
+		PACKET_PROCESS_CALLBACK ppcUserCallback = lpInstance->GetUserCallback();
+		LPVOID lpUserArgument = lpInstance->GetUserArgument();
+		BYTE *pbIpPacket = (BYTE *)calloc(MAX_IP_PACKET_LENGTH, sizeof(BYTE));
+
+		while (&plIsRunning)
+		{
+			if (recv(sListenSocket, (char *)pbIpPacket, MAX_IP_PACKET_LENGTH, 0) != SOCKET_ERROR)
+			{
+				ppcUserCallback((IP_HEADER *)pbIpPacket, MAX_IP_PACKET_LENGTH, lpUserArgument);
+			}
+		}
+
+		return 0;
 	}
 }

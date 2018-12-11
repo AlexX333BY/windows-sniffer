@@ -3,16 +3,20 @@
 
 namespace WindowsSniffer
 {
-	PacketProcessRoutineArgument::PacketProcessRoutineArgument(SOCKET sListenSocket, volatile LONG *plIsRunning, LPVOID lpUserArgument)
-		: m_sListenSocket(sListenSocket), m_plIsRunning(plIsRunning), m_lpUserArgument(lpUserArgument)
+	PacketProcessRoutineArgument::PacketProcessRoutineArgument(SOCKET sListenSocket, LONG *plIsRunning, PACKET_PROCESS_CALLBACK ppcUserCallback, LPVOID lpUserArgument)
+		: m_sListenSocket(sListenSocket), m_plIsRunning(plIsRunning), m_ppcUserCallback(ppcUserCallback), m_lpUserArgument(lpUserArgument)
 	{
 		if (plIsRunning == NULL)
 		{
 			throw new std::invalid_argument("plIsRunning");
 		}
+		if (ppcUserCallback == NULL)
+		{
+			throw new std::invalid_argument("ppcUserCallback");
+		}
 	}
 
-	volatile LONG *PacketProcessRoutineArgument::GetIsRunningPtr()
+	LONG *PacketProcessRoutineArgument::GetIsRunningPtr()
 	{
 		return m_plIsRunning;
 	}
@@ -20,6 +24,11 @@ namespace WindowsSniffer
 	SOCKET PacketProcessRoutineArgument::GetSocket()
 	{
 		return m_sListenSocket;
+	}
+
+	PACKET_PROCESS_CALLBACK PacketProcessRoutineArgument::GetUserCallback()
+	{
+		return m_ppcUserCallback;
 	}
 
 	LPVOID PacketProcessRoutineArgument::GetUserArgument()
