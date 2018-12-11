@@ -11,7 +11,7 @@ namespace WindowsSniffer
 	class Sniffer
 	{
 	public:
-		Sniffer(PACKET_PROCESS_CALLBACK ppcCallback);
+		Sniffer(PACKET_PROCESS_CALLBACK ppcCallback, LPCSTR lpsIp);
 		~Sniffer();
 		BOOL Start();
 		BOOL Stop();
@@ -19,7 +19,8 @@ namespace WindowsSniffer
 	protected:
 		PACKET_PROCESS_CALLBACK m_ppcCallback;
 		volatile BOOL m_bIsRunning;
-		HANDLE hProcessThread;
+		HANDLE m_hProcessThread;
+		IN_ADDR m_iaIp;
 
 		static DWORD WINAPI PacketProcessRoutine(PacketProcessRoutineArgument *lpInstance);
 	};
