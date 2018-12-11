@@ -78,7 +78,7 @@ namespace WindowsSniffer
 		if (!InterlockedCompareExchange(&m_lIsRunning, TRUE, FALSE))
 		{
 			PacketProcessRoutineArgument *ppraArgument = new PacketProcessRoutineArgument(m_sListenSocket, &m_lIsRunning, m_ppcCallback, lpArgument);
-			m_hProcessThread = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)PacketProcessRoutine, this, 0, NULL);
+			m_hProcessThread = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)PacketProcessRoutine, ppraArgument, 0, NULL);
 
 			if (m_hProcessThread == NULL)
 			{
@@ -121,7 +121,7 @@ namespace WindowsSniffer
 		LPVOID lpUserArgument = lpInstance->GetUserArgument();
 		BYTE *pbIpPacket = (BYTE *)calloc(MAX_IP_PACKET_LENGTH, sizeof(BYTE));
 
-		while (&plIsRunning)
+		while (*plIsRunning)
 		{
 			if (recv(sListenSocket, (char *)pbIpPacket, MAX_IP_PACKET_LENGTH, 0) != SOCKET_ERROR)
 			{
@@ -129,6 +129,7 @@ namespace WindowsSniffer
 			}
 		}
 
+		delete lpInstance;
 		return 0;
 	}
 }
