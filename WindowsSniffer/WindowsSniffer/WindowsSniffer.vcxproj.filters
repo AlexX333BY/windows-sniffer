@@ -18,9 +18,15 @@
     <ClInclude Include="Sniffer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="PacketProcessRoutineArgument.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Sniffer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PacketProcessRoutineArgument.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

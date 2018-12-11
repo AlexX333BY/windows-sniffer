@@ -115,9 +115,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="PacketProcessRoutineArgument.h" />
     <ClInclude Include="Sniffer.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="PacketProcessRoutineArgument.cpp" />
     <ClCompile Include="Sniffer.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
