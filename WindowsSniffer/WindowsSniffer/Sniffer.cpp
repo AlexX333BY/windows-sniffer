@@ -8,7 +8,7 @@
 namespace WindowsSniffer
 {
 	Sniffer::Sniffer(PACKET_PROCESS_CALLBACK ppcCallback, LPCSTR lpsIp)
-		: m_ppcCallback(ppcCallback), m_bIsRunning(FALSE), m_hProcessThread(NULL)
+		: m_ppcCallback(ppcCallback), m_lIsRunning(FALSE), m_hProcessThread(NULL)
 	{
 		if (ppcCallback == NULL)
 		{
@@ -52,6 +52,51 @@ namespace WindowsSniffer
 			closesocket(m_sListenSocket);
 			WSACleanup();
 			throw new std::runtime_error("Error setting promiscuous mode");
+		}
+	}
+
+	Sniffer::~Sniffer()
+	{
+		//
+	}
+
+	VOID Sniffer::Start(LPVOID lpArgument)
+	{
+		if (!InterlockedCompareExchange(&m_lIsRunning, TRUE, FALSE))
+		{
+			PacketProcessRoutineArgument *ppraArgument = new PacketProcessRoutineArgument(m_sListenSocket, &m_lIsRunning, lpArgument);
+			m_hProcessThread = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)PacketProcessRoutine, this, 0, NULL);
+
+			if (m_hProcessThread == NULL)
+			{
+				delete ppraArgument;
+				throw new std::runtime_error("Error creating thread");
+			}
+		}
+		else
+		{
+			throw new std::logic_error("Already running");
+		}
+	}
+
+	VOID Sniffer::Stop()
+	{
+		Stop(INFINITE);
+	}
+
+	VOID Sniffer::Stop(DWORD dwWaitTime)
+	{
+		if (InterlockedCompareExchange(&m_lIsRunning, FALSE, TRUE))
+		{
+			if (WaitForSingleObject(m_hProcessThread, dwWaitTime) == WAIT_TIMEOUT)
+			{
+				TerminateThread(m_hProcessThread, 1);
+			}
+			CloseHandle(m_hProcessThread);
+		}
+		else
+		{
+			throw new std::logic_error("Nothing to stop");
 		}
 	}
 }

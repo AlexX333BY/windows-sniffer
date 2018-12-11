@@ -13,12 +13,12 @@ namespace WindowsSniffer
 	public:
 		Sniffer(PACKET_PROCESS_CALLBACK ppcCallback, LPCSTR lpsIp);
 		~Sniffer();
-		BOOL Start();
-		BOOL Stop();
-		BOOL Stop(DWORD dwWaitTime);
+		VOID Start(LPVOID lpArgument);
+		VOID Stop();
+		VOID Stop(DWORD dwWaitTime);
 	protected:
 		PACKET_PROCESS_CALLBACK m_ppcCallback;
-		volatile BOOL m_bIsRunning;
+		volatile LONG m_lIsRunning;
 		HANDLE m_hProcessThread;
 		SOCKET m_sListenSocket;
 

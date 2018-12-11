@@ -7,11 +7,13 @@ namespace WindowsSniffer
 	class PacketProcessRoutineArgument
 	{
 	public:
-		PacketProcessRoutineArgument(SOCKET sListenSocket, LPBOOL lpbIsRunning);
+		PacketProcessRoutineArgument(SOCKET sListenSocket, volatile LONG *plIsRunning, LPVOID lpUserArgument);
 		SOCKET GetSocket();
-		LPBOOL GetIsRunningPtr();
+		volatile LONG *GetIsRunningPtr();
+		LPVOID GetUserArgument();
 	protected:
 		CONST SOCKET m_sListenSocket;
-		CONST LPBOOL m_lpbIsRunning;
-	}
+		volatile LONG *m_plIsRunning;
+		CONST LPVOID m_lpUserArgument;
+	};
 }

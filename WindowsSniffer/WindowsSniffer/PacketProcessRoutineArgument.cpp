@@ -3,22 +3,27 @@
 
 namespace WindowsSniffer
 {
-	PacketProcessRoutineArgument::PacketProcessRoutineArgument(SOCKET sListenSocket, LPBOOL lpbIsRunning)
-		: m_sListenSocket(sListenSocket), m_lpbIsRunning(lpbIsRunning)
+	PacketProcessRoutineArgument::PacketProcessRoutineArgument(SOCKET sListenSocket, volatile LONG *plIsRunning, LPVOID lpUserArgument)
+		: m_sListenSocket(sListenSocket), m_plIsRunning(plIsRunning), m_lpUserArgument(lpUserArgument)
 	{
-		if (lpbIsRunning == NULL)
+		if (plIsRunning == NULL)
 		{
-			throw new std::invalid_argument("lpTask");
+			throw new std::invalid_argument("plIsRunning");
 		}
 	}
 
-	LPBOOL PacketProcessRoutineArgument::GetIsRunningPtr()
+	volatile LONG *PacketProcessRoutineArgument::GetIsRunningPtr()
 	{
-		return m_lpbIsRunning;
+		return m_plIsRunning;
 	}
 
 	SOCKET PacketProcessRoutineArgument::GetSocket()
 	{
 		return m_sListenSocket;
+	}
+
+	LPVOID PacketProcessRoutineArgument::GetUserArgument()
+	{
+		return m_lpUserArgument;
 	}
 }
