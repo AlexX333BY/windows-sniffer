@@ -57,7 +57,20 @@ namespace WindowsSniffer
 
 	Sniffer::~Sniffer()
 	{
-		//
+		if (m_lIsRunning)
+		{
+			try
+			{
+				Stop();
+			}
+			catch (std::logic_error *ex)
+			{
+				delete ex;
+			}
+		}
+
+		closesocket(m_sListenSocket);
+		WSACleanup();
 	}
 
 	VOID Sniffer::Start(LPVOID lpArgument)
