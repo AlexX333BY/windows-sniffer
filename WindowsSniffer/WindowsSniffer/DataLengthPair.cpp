@@ -11,4 +11,14 @@ namespace WindowsSniffer
 			throw new std::invalid_argument("lpData");
 		}
 	}
+
+	LPVOID DataLengthPair::GetData()
+	{
+		return m_lpData;
+	}
+
+	DWORD DataLengthPair::GetLength()
+	{
+		return m_dwLength;
+	}
 }
