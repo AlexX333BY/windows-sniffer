@@ -1,6 +1,6 @@
-#include <Windows.h>
-#include "WindowProcessor.h"
 #include "WindowController.h"
+#include "WindowProcessor.h"
+#include <Windows.h>
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {

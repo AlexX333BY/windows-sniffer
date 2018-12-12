@@ -1,6 +1,8 @@
 #pragma once
 
-#include <Windows.h>
+#include "..\WindowsSniffer\Sniffer.h"
+#include "..\WindowsSniffer\typedefs.h"
+#include "PacketProcessDelegateArgument.h"
 #include <CommCtrl.h>
 #include <RichEdit.h>
 
@@ -24,6 +26,9 @@ namespace WindowsSnifferView
 		LRESULT HandleMessage(UINT message, WPARAM wParam, LPARAM lParam);
 	protected:
 		HWND m_hWnd;
+		HANDLE m_hFileHandle;
+		WindowsSniffer::Sniffer *m_sSniffer;
+		PacketProcessDelegateArgument *m_ppdaArgument;
 
 		SIZE m_sButtonSize;
 		SIZE m_sTitleSize;
@@ -42,5 +47,10 @@ namespace WindowsSnifferView
 		VOID CreateRichtext();
 
 		VOID SetSniffingState(BOOL bIsSniffing);
+
+		static DWORD WINAPI PacketProcessDelegate(WindowsSniffer::IP_HEADER *lpSniffedData, 
+			DWORD dwByteCount, PacketProcessDelegateArgument *ppdaArgument);
+
+		static DWORD CALLBACK EditStreamCallback(DWORD_PTR dwCookie, LPBYTE lpBuff, LONG cb, PLONG pcb);
 	};
 }

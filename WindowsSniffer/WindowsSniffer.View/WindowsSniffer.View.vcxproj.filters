@@ -24,12 +24,24 @@
     <ClCompile Include="WindowController.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="PacketProcessDelegateArgument.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="IpPacketProcessor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="WindowProcessor.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="WindowController.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PacketProcessDelegateArgument.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="IpPacketProcessor.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
