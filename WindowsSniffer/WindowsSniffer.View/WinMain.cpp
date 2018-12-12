@@ -28,7 +28,8 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	wndClassEx.hIconSm = NULL;
 	RegisterClassEx(&wndClassEx);
 
-	HWND hWnd = CreateWindow(spWndClassName, "Windows Sniffer", WS_OVERLAPPEDWINDOW,
+	HWND hWnd = CreateWindow(spWndClassName, "Windows Sniffer", 
+		WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX,
 		CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, NULL, NULL,
 		hInstance, NULL);
 	ShowWindow(hWnd, nCmdShow);
