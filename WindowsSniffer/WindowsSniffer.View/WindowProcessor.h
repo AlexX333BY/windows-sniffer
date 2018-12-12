@@ -8,6 +8,7 @@ namespace WindowsSnifferView
 	{
 	public:
 		static LONG GetWindowFontHeight(HWND hWnd);
+		static SIZE GetWindowRectSize(HWND hWnd);
 		static SIZE GetWindowSize(HWND hWnd);
 		static COLORREF GetDefaultBackgroundColor();
 	};

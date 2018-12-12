@@ -33,19 +33,17 @@ namespace WindowsSnifferView
 
 	VOID WindowController::CreateEdits()
 	{
-		CreateWindow(WC_EDIT, "",
-			WS_VISIBLE | WS_CHILD | WS_BORDER,
+		CreateWindow(WC_EDIT, "", WS_VISIBLE | WS_CHILD | WS_BORDER,
 			m_sButtonSize.cx + m_sTitleSize.cx + 3 * m_lDefaultElementInterval, m_lDefaultElementInterval, m_sEditSize.cx, m_sEditSize.cy,
 			m_hWnd, (HMENU)FILENAME_EDIT, NULL, NULL);
-		CreateWindow(WC_IPADDRESS, "",
-			WS_VISIBLE | WS_CHILD | WS_BORDER,
+		CreateWindow(WC_IPADDRESS, "", WS_VISIBLE | WS_CHILD | WS_BORDER,
 			m_sButtonSize.cx + m_sTitleSize.cx + 3 * m_lDefaultElementInterval, m_sEditSize.cy + 2 * m_lDefaultElementInterval, m_sEditSize.cx, m_sEditSize.cy,
 			m_hWnd, (HMENU)IP_EDIT, NULL, NULL);
 	}
 
 	VOID WindowController::CreateRichtext()
 	{
-		LoadLibrary(TEXT("Riched20.dll"));
+		LoadLibrary("Riched20.dll");
 		CreateWindow(RICHEDIT_CLASS, "", ES_MULTILINE | WS_VISIBLE | WS_CHILD | WS_BORDER | WS_TABSTOP | ES_READONLY,
 			m_lDefaultElementInterval, 2 * m_lDefaultElementHeight + 3 * m_lDefaultElementInterval,
 			m_sRichTextSize.cx, m_sRichTextSize.cy, m_hWnd, (HMENU)OUTPUT_RICHTEXT, NULL, NULL);
@@ -61,6 +59,9 @@ namespace WindowsSnifferView
 
 	VOID WindowController::InitializeSizes()
 	{
+		SIZE sWindowSize = WindowProcessor::GetWindowSize(m_hWnd);
+		SIZE sWindowRectSize = WindowProcessor::GetWindowRectSize(m_hWnd);
+
 		m_lDefaultElementInterval = WindowProcessor::GetWindowFontHeight(m_hWnd);
 		m_lDefaultElementHeight = (LONG)(m_lDefaultElementInterval * 1.5);
 		m_sButtonSize.cx = 64;
@@ -69,10 +70,10 @@ namespace WindowsSnifferView
 		m_sTitleSize.cy = m_lDefaultElementHeight;
 		m_sEditSize.cx = 256;
 		m_sEditSize.cy = m_lDefaultElementHeight;
-		m_lTotalWindowWidth = m_sButtonSize.cx + m_sTitleSize.cx + m_sEditSize.cx + 5 * m_lDefaultElementInterval;
+		m_lTotalWindowWidth = sWindowSize.cx - sWindowRectSize.cx 
+			+ m_sButtonSize.cx + m_sTitleSize.cx + m_sEditSize.cx + 4 * m_lDefaultElementInterval;
 		m_sRichTextSize.cx = m_lTotalWindowWidth - 3 * m_lDefaultElementInterval;
-		m_sRichTextSize.cy = WindowProcessor::GetWindowSize(m_hWnd).cy 
-			- 2 * m_lDefaultElementHeight - 4 * m_lDefaultElementHeight;
+		m_sRichTextSize.cy = sWindowRectSize.cy - 2 * m_lDefaultElementHeight - 4 * m_lDefaultElementInterval;
 	}
 
 	VOID WindowController::SetSniffingState(BOOL bIsSniffing)

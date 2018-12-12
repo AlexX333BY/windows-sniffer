@@ -11,10 +11,20 @@ namespace WindowsSnifferView
 		return tmTextMetric.tmHeight;
 	}
 
-	SIZE WindowProcessor::GetWindowSize(HWND hWnd)
+	SIZE WindowProcessor::GetWindowRectSize(HWND hWnd)
 	{
 		RECT rWndRect;
 		GetClientRect(hWnd, &rWndRect);
+		SIZE sWndSize;
+		sWndSize.cx = rWndRect.right - rWndRect.left;
+		sWndSize.cy = rWndRect.bottom - rWndRect.top;
+		return sWndSize;
+	}
+
+	SIZE WindowProcessor::GetWindowSize(HWND hWnd)
+	{
+		RECT rWndRect;
+		GetWindowRect(hWnd, &rWndRect);
 		SIZE sWndSize;
 		sWndSize.cx = rWndRect.right - rWndRect.left;
 		sWndSize.cy = rWndRect.bottom - rWndRect.top;
