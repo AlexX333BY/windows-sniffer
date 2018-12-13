@@ -3,6 +3,7 @@
 #include "..\WindowsSniffer\Sniffer.h"
 #include "..\WindowsSniffer\typedefs.h"
 #include "PacketProcessDelegateArgument.h"
+#include "SnifferShutdownArgument.h"
 #include <CommCtrl.h>
 #include <RichEdit.h>
 
@@ -47,10 +48,11 @@ namespace WindowsSnifferView
 		VOID CreateRichtext();
 
 		VOID SetSniffingState(BOOL bIsSniffing);
+		static VOID SetSniffingState(HWND hWnd, BOOL bIsSniffing);
 
 		static DWORD WINAPI PacketProcessDelegate(WindowsSniffer::IP_HEADER *lpSniffedData, 
 			DWORD dwByteCount, PacketProcessDelegateArgument *ppdaArgument);
 
-		static DWORD CALLBACK EditStreamCallback(DWORD_PTR dwCookie, LPBYTE lpBuff, LONG cb, PLONG pcb);
+		static DWORD WINAPI SnifferShutdownCallback(SnifferShutdownArgument *ssaArgument);
 	};
 }

@@ -125,6 +125,7 @@
   <ItemGroup>
     <ClCompile Include="IpPacketProcessor.cpp" />
     <ClCompile Include="PacketProcessDelegateArgument.cpp" />
+    <ClCompile Include="SnifferShutdownArgument.cpp" />
     <ClCompile Include="WindowController.cpp" />
     <ClCompile Include="WindowProcessor.cpp" />
     <ClCompile Include="WinMain.cpp" />
@@ -132,6 +133,8 @@
   <ItemGroup>
     <ClInclude Include="IpPacketProcessor.h" />
     <ClInclude Include="PacketProcessDelegateArgument.h" />
+    <ClInclude Include="SnifferShutdownArgument.h" />
+    <ClInclude Include="typedefs.h" />
     <ClInclude Include="WindowController.h" />
     <ClInclude Include="WindowProcessor.h" />
   </ItemGroup>

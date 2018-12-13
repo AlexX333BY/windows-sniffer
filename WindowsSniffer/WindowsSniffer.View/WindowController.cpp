@@ -80,16 +80,23 @@ namespace WindowsSnifferView
 
 	VOID WindowController::SetSniffingState(BOOL bIsSniffing)
 	{
-		EnableWindow(GetDlgItem(m_hWnd, START_BUTTON), !bIsSniffing);
-		EnableWindow(GetDlgItem(m_hWnd, STOP_BUTTON), bIsSniffing);
-		EnableWindow(GetDlgItem(m_hWnd, FILENAME_EDIT), !bIsSniffing);
-		EnableWindow(GetDlgItem(m_hWnd, IP_EDIT), !bIsSniffing);
+		SetSniffingState(m_hWnd, bIsSniffing);
+	}
+
+	VOID WindowController::SetSniffingState(HWND hWnd, BOOL bIsSniffing)
+	{
+		EnableWindow(GetDlgItem(hWnd, START_BUTTON), !bIsSniffing);
+		EnableWindow(GetDlgItem(hWnd, STOP_BUTTON), bIsSniffing);
+		EnableWindow(GetDlgItem(hWnd, FILENAME_EDIT), !bIsSniffing);
+		EnableWindow(GetDlgItem(hWnd, IP_EDIT), !bIsSniffing);
 	}
 
 	LRESULT WindowController::HandleMessage(UINT message, WPARAM wParam, LPARAM lParam)
 	{
 		CONST int iIpLenght = 15;
 		LPSTR lpsIp;
+		HANDLE hShutdownThread;
+		SnifferShutdownArgument *ssaArgument;
 
 		switch (message)
 		{
@@ -127,15 +134,32 @@ namespace WindowsSnifferView
 					}
 					free(lpsFilename);
 				}
-				catch (std::runtime_error ex)
+				catch (std::runtime_error *ex)
 				{
-					free(lpsIp);
+					delete ex;
+					MessageBox(m_hWnd, "Error creating socket with specified IP", "Error", MB_OK | MB_ICONERROR);
+					SetSniffingState(FALSE);
 				}
-				
+				catch (std::invalid_argument *ex)
+				{
+					delete ex;
+					MessageBox(m_hWnd, "Invalid IP", "Error", MB_OK | MB_ICONERROR);
+					SetSniffingState(FALSE);
+				}
+
 				free(lpsIp);
 				break;
 			case STOP_BUTTON:
-				SetSniffingState(FALSE);
+				ssaArgument = new SnifferShutdownArgument(m_sSniffer, m_hWnd, SetSniffingState, m_hFileHandle, m_ppdaArgument);
+				hShutdownThread = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)SnifferShutdownCallback, ssaArgument, 0, NULL);
+				if (hShutdownThread == NULL)
+				{
+					MessageBox(m_hWnd, "Error stopping sniffer", "Error", MB_OK | MB_ICONERROR);
+				}
+				else
+				{
+					CloseHandle(hShutdownThread);
+				}
 				break;
 			}
 			break;
@@ -155,8 +179,8 @@ namespace WindowsSnifferView
 		if (lpsResultText != NULL)
 		{
 			GetWindowText(hRichEdit, lpsResultText, iTotalTextLength);
-			strcat_s(lpsResultText, iTotalTextLength + 1, "\n");
 			strcat_s(lpsResultText, iTotalTextLength + 1, lpsPacketInfo);
+			strcat_s(lpsResultText, iTotalTextLength + 1, "\n");
 			SetWindowText(hRichEdit, lpsResultText);
 			free(lpsResultText);
 		}
@@ -169,5 +193,29 @@ namespace WindowsSnifferView
 			WriteFile(hFile, lpSniffedData, lpSniffedData->wTotalLength, &dwWrittenCount, NULL);
 		}
 		return ((lpsResultText != NULL) && ((hFile == NULL) || (dwWrittenCount == lpSniffedData->wTotalLength))) ? 0 : 1;
+	}
+
+	DWORD WINAPI WindowController::SnifferShutdownCallback(SnifferShutdownArgument *ssaArgument)
+	{
+		WindowsSniffer::Sniffer *sSniffer = ssaArgument->GetSniffer();
+		sSniffer->Stop();
+		delete sSniffer;
+
+		HANDLE hFile = ssaArgument->GetFile();
+		if (hFile != NULL)
+		{
+			CloseHandle(hFile);
+		}
+
+		PacketProcessDelegateArgument *ppdaArgument = ssaArgument->GetArgument();
+		if (ppdaArgument != NULL)
+		{
+			delete ppdaArgument;
+		}
+
+		ssaArgument->GetCallback()(ssaArgument->GetHwnd(), FALSE);
+
+		delete ssaArgument;
+		return 0;
 	}
 }
