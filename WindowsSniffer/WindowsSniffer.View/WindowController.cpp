@@ -160,13 +160,15 @@ namespace WindowsSnifferView
 				break;
 			case STOP_BUTTON:
 				ssaArgument = new SnifferShutdownArgument(m_sSniffer, m_hWnd, SetSniffingState, m_hFileHandle, m_ppdaArgument);
-				hShutdownThread = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)SnifferShutdownCallback, ssaArgument, 0, NULL);
+				hShutdownThread = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)SnifferShutdownCallback, ssaArgument, CREATE_SUSPENDED, NULL);
 				if (hShutdownThread == NULL)
 				{
 					MessageBox(m_hWnd, "Error stopping sniffer", "Error", MB_OK | MB_ICONERROR);
 				}
 				else
 				{
+					EnableWindow(GetDlgItem(m_hWnd, STOP_BUTTON), FALSE);
+					ResumeThread(hShutdownThread);
 					CloseHandle(hShutdownThread);
 				}
 				break;
