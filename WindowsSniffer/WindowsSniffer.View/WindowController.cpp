@@ -49,6 +49,15 @@ namespace WindowsSnifferView
 		CreateWindow(RICHEDIT_CLASS, "", ES_MULTILINE | WS_VISIBLE | WS_CHILD | WS_BORDER | WS_TABSTOP | ES_READONLY | ES_AUTOVSCROLL,
 			m_lDefaultElementInterval, 2 * m_lDefaultElementHeight + 3 * m_lDefaultElementInterval,
 			m_sRichTextSize.cx, m_sRichTextSize.cy, m_hWnd, (HMENU)OUTPUT_RICHTEXT, NULL, NULL);
+
+		HWND hRichEditWnd = GetDlgItem(m_hWnd, OUTPUT_RICHTEXT);
+		CHARFORMAT2 cfCharFormat;
+		cfCharFormat.cbSize = sizeof(CHARFORMAT2);
+		SendMessage(hRichEditWnd, EM_GETCHARFORMAT, SCF_DEFAULT, (LPARAM)&cfCharFormat);
+		cfCharFormat.cbSize = sizeof(CHARFORMAT2);
+		cfCharFormat.dwMask = CFM_FACE;
+		strcpy_s(cfCharFormat.szFaceName, sizeof(cfCharFormat.szFaceName) / sizeof(char), "Courier New");
+		SendMessage(hRichEditWnd, EM_SETCHARFORMAT, SCF_ALL, (LPARAM)&cfCharFormat);
 	}
 
 	VOID WindowController::CreateElements()
@@ -174,13 +183,13 @@ namespace WindowsSnifferView
 		HWND hRichEdit = GetDlgItem(ppdaArgument->GetHwnd(), OUTPUT_RICHTEXT);
 		LPSTR lpsPacketInfo = IpPacketProcessor::GetIpPacketStringRepresentation(lpSniffedData);
 
-		int iTotalTextLength = GetWindowTextLength(hRichEdit) + lstrlen(lpsPacketInfo) + 1;
+		int iTotalTextLength = GetWindowTextLength(hRichEdit) + lstrlen(lpsPacketInfo) + 2;
 		LPSTR lpsResultText = (LPSTR)calloc(iTotalTextLength + 1, sizeof(CHAR));
 		if (lpsResultText != NULL)
 		{
 			GetWindowText(hRichEdit, lpsResultText, iTotalTextLength);
 			strcat_s(lpsResultText, iTotalTextLength + 1, lpsPacketInfo);
-			strcat_s(lpsResultText, iTotalTextLength + 1, "\n");
+			strcat_s(lpsResultText, iTotalTextLength + 1, "\n\n");
 			SetWindowText(hRichEdit, lpsResultText);
 			free(lpsResultText);
 		}

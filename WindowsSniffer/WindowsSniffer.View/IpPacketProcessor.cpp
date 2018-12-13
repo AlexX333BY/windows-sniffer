@@ -7,7 +7,7 @@ namespace WindowsSnifferView
 	LPSTR IpPacketProcessor::GetIpPacketStringRepresentation(WindowsSniffer::IP_HEADER *ipPacket)
 	{
 		CONST size_t sIpLen = 15;
-		CONST size_t sBufferLen = 95;
+		CONST size_t sBufferLen = 127;
 		LPSTR lpsResult = (LPSTR)calloc(sBufferLen + 1, sizeof(CHAR));
 		IN_ADDR iaAddress;
 
@@ -17,8 +17,8 @@ namespace WindowsSnifferView
 		iaAddress.S_un.S_addr = ipPacket->dwDestinationIpAddress;
 		inet_ntop(AF_INET, &iaAddress, lpsDest, sIpLen + 1);
 
-		sprintf_s(lpsResult, sBufferLen, "Source: %s Destination: %s Protocol: %s TTL: %d",
-			lpsSource, lpsDest, GetIpPacketProtocolStringRepresentation(ipPacket->bProtocol), ipPacket->bTimeToLive);
+		sprintf_s(lpsResult, sBufferLen, "Source: %-15s Destination: %-15s\nTTL: %-3d Length: %-5d Protocol: %s",
+			lpsSource, lpsDest, ipPacket->bTimeToLive, ipPacket->wTotalLength, GetIpPacketProtocolStringRepresentation(ipPacket->bProtocol));
 
 		free(lpsSource);
 		free(lpsDest);
