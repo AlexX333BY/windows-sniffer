@@ -7,7 +7,7 @@ namespace WindowsSniffer
 	typedef struct _IP_HEADER
 	{
 		BYTE bVersionIhl;
-		BYTE bDscpEcn;
+		BYTE bTypeOfService;
 		WORD wTotalLength;
 		WORD wIdentification;
 		WORD wFlagsFragmentOffset;
